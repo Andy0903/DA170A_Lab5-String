@@ -146,6 +146,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="String.h" />
+    <ClInclude Include="StringTest.h" />
+    <ClInclude Include="VG.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="String.cpp" />
+    <ClCompile Include="StringTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
