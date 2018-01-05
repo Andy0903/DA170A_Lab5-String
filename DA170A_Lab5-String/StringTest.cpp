@@ -35,74 +35,75 @@ void PrintReallocationScheme() {
     size_t sz;
 
     Vector foo;
-    sz = foo.capacity();
+    sz = foo.Capacity();
     std::cout << "mGrowing from default:\n";
     std::cout << "capacity is: " << sz << '\n';
     for (int i = 0; i < 100; ++i) {
-        foo.push_back(i);
-        if (sz != foo.capacity()) {
-            sz = foo.capacity();
+        foo.Push_back(i);
+        if (sz != foo.Capacity()) {
+            sz = foo.Capacity();
             std::cout << "capacity changed: " << sz << '\n';
         }
     }
 
     Vector bar;
-    bar.reserve(100);   // this is the only difference with foo above
-    sz = bar.capacity();
+    bar.Reserve(100);   // this is the only difference with foo above
+    sz = bar.Capacity();
     std::cout << "reserve(100) no reallocations\n";
     std::cout << "capacity is: " << sz << '\n';
     for (int i = 0; i < 100; ++i) {
-        bar.push_back(i);
-        if (sz != bar.capacity()) {
-            sz = bar.capacity();
+        bar.Push_back(i);
+        if (sz != bar.Capacity()) {
+            sz = bar.Capacity();
             std::cout << "capacity changed: " << sz << '\n';
         }
     }
-    std::cin.get();
+	//std::cin.get();
 }
 
 void TestPushBackReallocation() {
     String str("hej");
-    assert(str.size() <= str.capacity());
+    assert(str.Size() <= str.Capacity());
 
 #ifdef VG
     //If VG we try to take 20 empty places: (size+1 < capacity)
     //we push_back one more until it is more then 20 places left (or sting to big)
-    while (str.size() + 20 >= str.capacity() && str.size() < 1000)
-        str.push_back('A' + rand() % 32);
-    assert(str.size() < 1000);	//If this fail it prbably the case that capacity is increased with a constant.
+    while (str.Size() + 20 >= str.Capacity() && str.Size() < 1000)
+        str.Push_back('A' + rand() % 32);
+    assert(str.Size() < 1000);	//If this fail it prbably the case that capacity is increased with a constant.
 #endif //VG
 
-    auto internalBuf = str.data();
-    auto cap = str.capacity();
-    auto siz = str.size();
+    auto internalBuf = str.Data();
+    auto cap = str.Capacity();
+    auto siz = str.Size();
     int i;
-    for (i = siz + 1; i <= cap; ++i) {
-        str.push_back(char(i) + 'a');
-        assert(internalBuf == str.data());
-        assert(cap == str.capacity());
-        assert(i == str.size());
+    for (i = siz + 1; i <= cap; ++i)
+	{
+        str.Push_back(char(i) + 'a');
+        assert(internalBuf == str.Data());
+        assert(cap == str.Capacity());
+        assert(i == str.Size());
     }
-    str.push_back(char(i));
-    assert(internalBuf != str.data());
-    assert(cap < str.capacity());
-    assert(i == str.size());
+    str.Push_back(char(i));
+    assert(internalBuf != str.Data());
+    assert(cap < str.Capacity());
+    assert(i == str.Size());
 
-    assert(str.size() != str.capacity());
-    internalBuf = str.data();
-    cap = str.capacity();
-    siz = str.size();
-    str.shrink_to_fit();
-    assert(internalBuf != str.data());
-    assert(str.size() == str.capacity());
-    assert(i == str.size());
+    assert(str.Size() != str.Capacity());
+    internalBuf = str.Data();
+    cap = str.Capacity();
+    siz = str.Size();
+    str.Shrink_to_fit();
+    assert(internalBuf != str.Data());
+    assert(str.Size() == str.Capacity());
+    assert(i == str.Size());
 
     str = "hej";
-    str.resize(10);
-    assert(10 == str.size() && str[7] == char());
-    cap = str.capacity() + 10;
-    str.resize(cap);
-    assert(str.size() == cap && str.capacity() >= cap);
+    str.Resize(10);
+    assert(10 == str.Size() && str[7] == char());
+    cap = str.Capacity() + 10;
+    str.Resize(cap);
+    assert(str.Size() == cap && str.Capacity() >= cap);
 }
 
 void TestFörGodkäntString() {
@@ -138,8 +139,8 @@ void TestFörGodkäntString() {
     //testas överallt!
 
 
-    //-	operator[](int i) som indexerar utan range check.
-    str = "bar";
+	//-	operator[](int i) som indexerar utan range check.
+	str = "bar";
     str[-1]; str[1000];	//No error
     assert(str[1] == 'a');
     str[1] = 'y';
@@ -151,11 +152,11 @@ void TestFörGodkäntString() {
 
                                                                                  //-	push_back(char c) lägger till ett tecken sist.
     str = "bar";
-    str.push_back('a');
+    str.Push_back('a');
     assert(str == "bara");
-    str.push_back('\0');
-    str.push_back('x');
-    assert(str.size() == 6 && str[4] == '\0' && str[5] == 'x');
+    str.Push_back('\0');
+    str.Push_back('x');
+    assert(str.Size() == 6 && str[4] == '\0' && str[5] == 'x');
 
     //-	size(), capacity() and reloccation test;
     TestPushBackReallocation();
@@ -173,12 +174,12 @@ void TestFörVälGodkäntString() {
 
     //-	at(int i) som indexerar med range check
     try {
-        str.at(-1);
+        str.At(-1);
         assert(false);
     }
     catch (std::out_of_range&) {};
     try {
-        str.at(3);
+        str.At(3);
         assert(false);
     }
     catch (std::out_of_range&) {};
@@ -187,34 +188,34 @@ void TestFörVälGodkäntString() {
 
     //-	at(int i) 
     str = "bar";
-    assert(str.at(1) == 'a');
-    str.at(1) = 'y';
-    assert(str.at(1) == 'y');
+    assert(str.At(1) == 'a');
+    str.At(1) = 'y';
+    assert(str.At(1) == 'y');
 
     const String strC(str);
-    assert(strC.at(1) == 'y');
-    assert(std::is_const<std::remove_reference< decltype(strC.at(1))>::type>::value); //Kolla att det blir en const resultat av indexering
+    assert(strC.At(1) == 'y');
+    assert(std::is_const<std::remove_reference< decltype(strC.At(1))>::type>::value); //Kolla att det blir en const resultat av indexering
 
                                                                                       // ConvertToChars
-    const char* temp = strC.data();
-    assert(strC.size() == 3);
-    assert(std::memcmp(temp, strC.data(), strC.size()) == 0);
-    assert(temp[strC.size()] == '\0');
+    const char* temp = strC.Data();
+    assert(strC.Size() == 3);
+    assert(std::memcmp(temp, strC.Data(), strC.Size()) == 0);
+    assert(temp[strC.Size()] == '\0');
 
     //	reserve()
-    auto internalBuf = str.data();
-    auto cap = str.capacity();
-    auto siz = str.size();
+    auto internalBuf = str.Data();
+    auto cap = str.Capacity();
+    auto siz = str.Size();
 
-    str.reserve(cap);
-    assert(internalBuf == str.data());
-    assert(cap == str.capacity());
-    assert(siz == str.size());
+    str.Reserve(cap);
+    assert(internalBuf == str.Data());
+    assert(cap == str.Capacity());
+    assert(siz == str.Size());
 
-    str.reserve(cap + 1);
-    assert(internalBuf != str.data());
-    assert(cap + 1 == str.capacity());
-    assert(siz == str.size());
+    str.Reserve(cap + 1);
+    assert(internalBuf != str.Data());
+    assert(cap + 1 == str.Capacity());
+    assert(siz == str.Size());
 
     /////////////////
     //-	operator+=(Sträng sträng) som tolkas som konkatenering.
@@ -225,16 +226,16 @@ void TestFörVälGodkäntString() {
 
     //+= som får plats;
     str = "bar";
-    str.reserve(10);
+    str.Reserve(10);
     str += "foo";
     assert(str == "barfoo");
 
     //+= som inte får plats;
-    str.reserve(10);
+    str.Reserve(10);
     str = "";
     int i;
-    for (i = 0; str.size() < str.capacity(); ++i)
-        str.push_back('0' + i);
+    for (i = 0; str.Size() < str.Capacity(); ++i)
+        str.Push_back('0' + i);
     str1 = "bar";
     str += str1;
     for (int k = 0; k < i; ++k)
@@ -250,17 +251,27 @@ void TestFörVälGodkäntString() {
     assert(str + String("foo") == "barfoo");
 
     //move
-    const char* strdata = str.data();
+    const char* strdata = str.Data();
     String mStr(std::move(str));
-    assert(strdata == mStr.data());
-    assert(nullptr == str.data());
+    assert(strdata == mStr.Data());
+    assert(nullptr == str.Data());
 
     str = std::move(mStr);
-    assert(strdata == str.data());
-    assert(nullptr == mStr.data());
+    assert(strdata == str.Data());
+    assert(nullptr == mStr.Data());
 
     cout << "\nTestFörVälGodkänt klar\n";
 }
 
 #endif //VG
 
+int main()
+{
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	std::locale::global(std::locale("swedish"));
+	TestFörGodkäntString();
+	TestFörVälGodkäntString();
+
+	cin.get();
+	return 0;
+}

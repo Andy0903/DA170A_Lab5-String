@@ -13,28 +13,37 @@ public:
 	~String();
 
 	explicit operator bool();
-	char& at(size_t i);
+	char& At(size_t i);
+	const char& String::At(const size_t i) const;
 	char& operator[](size_t i);
-	const char* data() const;
+	const char& operator[](size_t i) const;
+	const char* Data() const;
 
-	int size() const;
-	void reserve(size_t);
-	int capacity() const;
-	void shrink_to_fit();
+	int Size() const;
+	void Reserve(size_t);
+	int Capacity() const;
+	void Shrink_to_fit();
 
-	void push_back(char c);
-	void resize(size_t n);
+	void Push_back(char c);
+	void Resize(size_t n);
 
 	String& operator +=(const String& rhs);
-	String& operator+();
+	String String::operator+(const String &rhs) const;
 
 	friend bool operator==(const String &lhs, const String &rhs);
 	friend bool operator !=(const String &lhs, const String &rhs);
 
 	friend std::ostream& operator<<(std::ostream& cout, String& rhs)
 	{
-		for (size_t i = 0; i < rhs. ? ? ? ? ; ++i)
-			cout << rhs. ? ? ? ? [i];
+		for (size_t i = 0; i < rhs.size; ++i)
+		{
+			cout << rhs[i];
+		}
 		return cout;
 	}
+
+private:
+	char *letters;
+	int size;
+	int capacity;
 };
